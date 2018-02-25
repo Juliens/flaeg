@@ -198,6 +198,16 @@ func (d *Duration) UnmarshalText(text []byte) error {
 	return d.Set(string(text))
 }
 
+// UnmarshalJSON deserializes the given text into a duration value.
+func (d *Duration) UnmarshalJSON(text []byte) error {
+	if v, err := strconv.Atoi(string(text)); err == nil {
+		*d = Duration(time.Duration(v))
+		return nil
+	}
+	d.Set(string(text))
+	return nil
+}
+
 // TimeValue time.Time Value
 type TimeValue time.Time
 
