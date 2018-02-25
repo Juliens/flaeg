@@ -146,3 +146,14 @@ func TestUnmarshalTextDuration(t *testing.T) {
 		t.Errorf("got %#v, want %#v", time.Duration(dur), 42*time.Second)
 	}
 }
+
+func TestUnmarshalJsonDuration(t *testing.T) {
+	var dur Duration
+	if err := dur.UnmarshalJSON([]byte("1000000000")); err != nil {
+		t.Fatalf("go error %s", err)
+	}
+
+	if time.Duration(dur) != time.Second {
+		t.Errorf("got %#v, want %#v", time.Duration(dur), time.Second)
+	}
+}
