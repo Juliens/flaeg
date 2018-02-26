@@ -209,8 +209,10 @@ func (d *Duration) UnmarshalJSON(text []byte) error {
 		*d = Duration(time.Duration(v))
 		return nil
 	}
-	d.Set(string(text))
-	return nil
+
+	v, err := time.ParseDuration(string(text))
+	*d = Duration(v)
+	return err
 }
 
 // TimeValue time.Time Value

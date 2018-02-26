@@ -166,12 +166,64 @@ func TestMarshalTextDurationWithHourAndMinutes(t *testing.T) {
 }
 
 func TestUnmarshalJsonDuration(t *testing.T) {
-	var dur Duration
-	if err := dur.UnmarshalJSON([]byte("1000000000")); err != nil {
-		t.Fatalf("go error %s", err)
+	testCases := []struct {
+		desc     string
+		value    string
+		expected time.Duration
+	}{
+		{
+			desc:     "1 second",
+			value:    "1000000000",
+			expected: time.Duration(1000000000),
+		},
+		{
+			desc:     "with units",
+			value:    "1m10s",
+			expected: time.Duration(70000000000),
+		},
 	}
 
-	if time.Duration(dur) != time.Second {
-		t.Errorf("got %#v, want %#v", time.Duration(dur), time.Second)
+	for _, test := range testCases {
+		test := test
+		t.Run(test.desc, func(t *testing.T) {
+			t.Parallel()
+
+			var dur Duration
+			if err := dur.UnmarshalJSON([]byte(test.value)); err != nil {
+				t.Fatalf("go error %s", err)
+			}
+
+			if time.Duration(dur) != test.expected {
+				t.Errorf("got %#v, want %#v", time.Duration(dur), test.expected)
+			}
+		})
+	}
+}
+
+func TestUnmarshalJsonDuratioError(t *testing.T) {
+	testCases := []struct {
+		desc  string
+		value string
+	}{
+		{
+			desc:  "empty",
+			value: "",
+		},
+		{
+			desc:  "invalid units",
+			value: "1k10s",
+		},
+	}
+
+	for _, test := range testCases {
+		test := test
+		t.Run(test.desc, func(t *testing.T) {
+			t.Parallel()
+
+			var dur Duration
+			if err := dur.UnmarshalJSON([]byte(test.value)); err == nil {
+				t.Fatal("want error got nil")
+			}
+		})
 	}
 }
