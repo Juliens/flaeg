@@ -147,6 +147,24 @@ func TestUnmarshalTextDuration(t *testing.T) {
 	}
 }
 
+func TestMarshalTextDuration(t *testing.T) {
+	var dur Duration
+	dur.Set("42")
+	duration, _ := dur.MarshalText()
+	if string(duration) != "42s" {
+		t.Errorf("got %#v, want %#v", dur, "42s")
+	}
+}
+
+func TestMarshalTextDurationWithHourAndMinutes(t *testing.T) {
+	var dur Duration
+	dur.Set("3670")
+	duration, _ := dur.MarshalText()
+	if string(duration) != "1h1m10s" {
+		t.Errorf("got %#v, want %#v", dur, "1h1m10s")
+	}
+}
+
 func TestUnmarshalJsonDuration(t *testing.T) {
 	var dur Duration
 	if err := dur.UnmarshalJSON([]byte("1000000000")); err != nil {
