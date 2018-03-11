@@ -1,6 +1,7 @@
 package parse
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"reflect"
@@ -201,6 +202,11 @@ func (d *Duration) MarshalText() ([]byte, error) {
 // It is meant to support TOML decoding of durations.
 func (d *Duration) UnmarshalText(text []byte) error {
 	return d.Set(string(text))
+}
+
+// MarshalJSON serializes the given duration value.
+func (d *Duration) MarshalJSON() ([]byte, error) {
+	return json.Marshal(time.Duration(*d))
 }
 
 // UnmarshalJSON deserializes the given text into a duration value.

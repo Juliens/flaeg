@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"testing"
 	"time"
+	"encoding/json"
+	"strings"
 )
 
 func TestSliceStringsSet(t *testing.T) {
@@ -348,5 +350,35 @@ func TestUnmarshalJsonDurationError(t *testing.T) {
 				t.Errorf("want error got nil")
 			}
 		})
+	}
+}
+
+type Object struct {
+	Timeout Duration
+}
+
+func TestJsonMarshal(t *testing.T) {
+	pointer := &Object{
+		Timeout: Duration(666 * time.Second),
+	}
+
+	bytes, err := json.Marshal(pointer)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(bytes), "666000000000") {
+		t.Fatalf("Marshal fail: %s", bytes)
+	}
+
+	object := Object{
+		Timeout: Duration(666 * time.Second),
+	}
+
+	bytes, err = json.Marshal(object)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(bytes), "666000000000") {
+		t.Fatalf("Marshal fail: %s", bytes)
 	}
 }
