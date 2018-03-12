@@ -216,7 +216,13 @@ func (d *Duration) UnmarshalJSON(text []byte) error {
 		return nil
 	}
 
-	v, err := time.ParseDuration(string(text))
+	//We use json unmarshal on value because we have the quoted version
+	var value string
+	err := json.Unmarshal(text, &value)
+	if err != nil {
+		return err
+	}
+	v, err := time.ParseDuration(value)
 	*d = Duration(v)
 	return err
 }

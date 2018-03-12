@@ -303,7 +303,7 @@ func TestUnmarshalJsonDuration(t *testing.T) {
 		},
 		{
 			desc:     "with units",
-			value:    "1m10s",
+			value:    "\"1m10s\"",
 			expected: time.Duration(70000000000),
 		},
 	}
@@ -380,5 +380,18 @@ func TestJsonMarshal(t *testing.T) {
 	}
 	if !strings.Contains(string(bytes), "666000000000") {
 		t.Fatalf("Marshal fail: %s", bytes)
+	}
+}
+
+func TestJsonUnmarshal(t *testing.T) {
+	pointer := Object{
+	}
+
+	err := json.Unmarshal([]byte(`{"Timeout": "10s"}`), &pointer)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if pointer.Timeout != 10000000000 {
+		t.Fatalf("Wrong value: %d instead of 10000000000", pointer.Timeout)
 	}
 }
