@@ -216,7 +216,7 @@ func (d *Duration) UnmarshalJSON(text []byte) error {
 		return nil
 	}
 
-	//We use json unmarshal on value because we have the quoted version
+	// We use json unmarshal on value because we have the quoted version
 	var value string
 	err := json.Unmarshal(text, &value)
 	if err != nil {
